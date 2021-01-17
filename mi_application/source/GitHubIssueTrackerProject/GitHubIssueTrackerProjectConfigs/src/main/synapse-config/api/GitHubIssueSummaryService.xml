@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/github-service" name="GitHubIssueSummaryService" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="GET" uri-template="/get-issues/{reponame}/{startdate}/{enddate}/{state}">
+        <inSequence>
+            <log level="custom">
+                <property name="Message" value="Service Invoked"/>
+            </log>
+            <call>
+                <endpoint key="GetGitHubIssues"/>
+            </call>
+            <respond/>
+        </inSequence>
+        <outSequence/>
+        <faultSequence/>
+    </resource>
+</api>

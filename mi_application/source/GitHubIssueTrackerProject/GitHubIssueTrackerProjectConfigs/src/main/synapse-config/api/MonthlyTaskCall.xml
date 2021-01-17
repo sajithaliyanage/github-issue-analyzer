@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/monthly-task" name="MonthlyTaskCall" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="GET" uri-template="/action/{reponame}/{startdate}/{enddate}">
+        <inSequence>
+            <call>
+                <endpoint key="GetTotalIssuesOfaRepo"/>
+            </call>
+            <log level="custom">
+                <property expression="json-eval($)" name="TotalCount"/>
+            </log>
+            <property expression="json-eval($.total_count)" name="MonthlyGitHubIssueTotalCount" scope="default" type="STRING"/>
+            <log level="custom">
+                <property expression="json-eval($.total_count)" name="MonthlyGitHubIssueTotalCount"/>
+            </log>
+            <property name="uri.var.state" scope="default" type="STRING" value="open"/>
+            <call>
+                <endpoint key="GetGitHubIssues"/>
+            </call>
+            <log level="custom">
+                <property expression="json-eval($)" name="OpenCount"/>
+            </log>
+            <log level="custom">
+                <property expression="json-eval($.total_count)" name="MonthlyGitHubIssueOpenCount"/>
+            </log>
+            <property expression="json-eval($.total_count)" name="MonthlyGitHubIssueOpenCount" scope="default" type="STRING"/>
+            <property name="uri.var.state" scope="default" type="STRING" value="closed"/>
+            <call>
+                <endpoint key="GetGitHubIssues"/>
+            </call>
+            <property expression="json-eval($.total_count)" name="MonthlyGitHubIssueCloseCount" scope="default" type="STRING"/>
+            <log level="custom">
+                <property expression="fn:concat(get-property('uri.var.reponame'), ' GitHub issue total count for range ', get-property('uri.var.startdate'), ' to ', get-property('uri.var.enddate'), ' is: ', $ctx:MonthlyGitHubIssueTotalCount)" name="Message: "/>
+            </log>
+            <payloadFactory media-type="json">
+                <format>{
+"text" : "⚠️  GitHub issue summary in wso2/$1 from $2 to $3. &#x1f535; Open issues:$4 &#x1f534; Closed issues:$5 ⚪ Total issues:$6"
+}</format>
+                <args>
+                    <arg evaluator="xml" expression="get-property('uri.var.reponame')"/>
+                    <arg evaluator="xml" expression="get-property('uri.var.startdate')"/>
+                    <arg evaluator="xml" expression="get-property('uri.var.enddate')"/>
+                    <arg evaluator="xml" expression="$ctx:MonthlyGitHubIssueOpenCount"/>
+                    <arg evaluator="xml" expression="$ctx:MonthlyGitHubIssueCloseCount"/>
+                    <arg evaluator="xml" expression="$ctx:MonthlyGitHubIssueTotalCount"/>
+                </args>
+            </payloadFactory>
+            <call>
+                <endpoint key="InvokeChatWebHook"/>
+            </call>
+        </inSequence>
+        <outSequence/>
+        <faultSequence/>
+    </resource>
+</api>

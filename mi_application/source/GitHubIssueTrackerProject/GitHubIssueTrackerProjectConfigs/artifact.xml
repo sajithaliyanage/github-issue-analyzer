@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><artifacts>
+    <artifact name="GitHubIssueSummaryService" groupId="com.example.api" version="1.0.0" type="synapse/api" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/api/GitHubIssueSummaryService.xml</file>
+    </artifact>
+    <artifact name="GetGitHubIssues" groupId="com.example.endpoint" version="1.0.0" type="synapse/endpoint" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/endpoints/GetGitHubIssues.xml</file>
+    </artifact>
+    <artifact name="DailyJobForCheckGitIssueState" groupId="com.example.task" version="1.0.0" type="synapse/task" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/tasks/DailyJobForCheckGitIssueState.xml</file>
+    </artifact>
+    <artifact name="MonthlyJobForGitIssueSummary" groupId="com.example.task" version="1.0.0" type="synapse/task" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/tasks/MonthlyJobForGitIssueSummary.xml</file>
+    </artifact>
+    <artifact name="DailyJobProxyExecutor" groupId="com.example.proxy-service" version="1.0.0" type="synapse/proxy-service" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/proxy-services/DailyJobProxyExecutor.xml</file>
+    </artifact>
+    <artifact name="GetAPIMProductGitHubIssues" groupId="com.example.endpoint" version="1.0.0" type="synapse/endpoint" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/endpoints/GetAPIMProductGitHubIssues.xml</file>
+    </artifact>
+    <artifact name="InvokeChatWebHook" groupId="com.example.endpoint" version="1.0.0" type="synapse/endpoint" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/endpoints/InvokeChatWebHook.xml</file>
+    </artifact>
+    <artifact name="MonthlyJobProxyExecutor" groupId="com.example.proxy-service" version="1.0.0" type="synapse/proxy-service" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/proxy-services/MonthlyJobProxyExecutor.xml</file>
+    </artifact>
+    <artifact name="MonthlyScheduleTask" groupId="com.example.sequence" version="1.0.0" type="synapse/sequence" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/sequences/MonthlyScheduleTask.xml</file>
+    </artifact>
+    <artifact name="DailyScheduleTask" groupId="com.example.sequence" version="1.0.0" type="synapse/sequence" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/sequences/DailyScheduleTask.xml</file>
+    </artifact>
+    <artifact name="csvFileRead" groupId="com.example.local-entry" version="1.0.0" type="synapse/local-entry" serverRole="EnterpriseServiceBus">
+        <file>/src/main/synapse-config/local-entries/csvFileRead.xml</file>
+    </artifact>
+    <artifact name="csvFileRead" groupId="com.example.local-entry" version="1.0.0" type="synapse/local-entry" serverRole="EnterpriseServiceBus">
+        <file>/src/main/synapse-config/local-entries/csvFileRead.xml</file>
+    </artifact>
+    <artifact name="MonthlyTaskCall" groupId="com.example.api" version="1.0.0" type="synapse/api" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/api/MonthlyTaskCall.xml</file>
+    </artifact>
+    <artifact name="DailyTaskCall" groupId="com.example.api" version="1.0.0" type="synapse/api" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/api/DailyTaskCall.xml</file>
+    </artifact>
+    <artifact name="GetTotalIssuesOfaRepo" groupId="com.example.endpoint" version="1.0.0" type="synapse/endpoint" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/endpoints/GetTotalIssuesOfaRepo.xml</file>
+    </artifact>
+</artifacts>

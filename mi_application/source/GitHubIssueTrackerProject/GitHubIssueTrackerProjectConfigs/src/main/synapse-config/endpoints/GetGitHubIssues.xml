@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint name="GetGitHubIssues" xmlns="http://ws.apache.org/ns/synapse">
+    <http method="get" uri-template="https://api.github.com/search/issues?q=repo:wso2/{uri.var.reponame}+type:issue+state:{uri.var.state}+created:{uri.var.startdate}..{uri.var.enddate}">
+        <suspendOnFailure>
+            <initialDuration>-1</initialDuration>
+            <progressionFactor>1.0</progressionFactor>
+        </suspendOnFailure>
+        <markForSuspension>
+            <retriesBeforeSuspension>0</retriesBeforeSuspension>
+        </markForSuspension>
+    </http>
+</endpoint>

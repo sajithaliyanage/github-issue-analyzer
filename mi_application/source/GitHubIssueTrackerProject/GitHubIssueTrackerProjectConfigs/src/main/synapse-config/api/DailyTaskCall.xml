@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/daily-task" name="DailyTaskCall" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="GET" uri-template="/action/{reponame}">
+        <inSequence>
+            <call>
+                <endpoint key="GetAPIMProductGitHubIssues"/>
+            </call>
+            <propertyGroup>
+                <property expression="json-eval($.total_count)" name="NewFetchedIssueTotalCount" scope="default" type="INTEGER"/>
+                <property expression="fn:concat('conf:/resource/', get-property('uri.var.reponame'), '-gitIssueTotalCount')" name="registryName" scope="default" type="STRING"/>
+                <property expression="get-property('registry', $ctx:registryName)" name="PreviousStoredIssueTotalCount" scope="default" type="STRING"/>
+                <property expression="$ctx:NewFetchedIssueTotalCount" name="{$ctx:registryName}" scope="registry" type="STRING"/>
+            </propertyGroup>
+            <script description="Evaluate GitHub Issue Difference" language="nashornJs"><![CDATA[var newIssueCount = mc.getProperty("NewFetchedIssueTotalCount");
+var previousIssueCount = mc.getProperty("PreviousStoredIssueTotalCount");
+var difference = Math.abs(newIssueCount - previousIssueCount);
+if (difference >= 50) {
+	if (newIssueCount > previousIssueCount ) {
+		mc.setProperty("DifferenceMessage", "has increased by " + difference);
+		mc.setProperty("DifferenceStatus", "INCREASED");
+	} else if (newIssueCount < previousIssueCount){
+	  	mc.setProperty("DifferenceMessage", "has decreased by " + difference);
+	  	mc.setProperty("DifferenceStatus", "DECREASED");
+	} else {
+		mc.setProperty("DifferenceMessage", "no change");
+	}
+}
+mc.setProperty("GitHubIssueDifference", difference);]]></script>
+            <log level="custom">
+                <property expression="$ctx:NewFetchedIssueTotalCount" name="New GitHub issue total count:"/>
+                <property expression="$ctx:PreviousStoredIssueTotalCount" name="Previous GitHub issue total count:"/>
+                <property expression="$ctx:DifferenceMessage" name="GitHub issue difference:"/>
+            </log>
+            <switch source="$ctx:DifferenceStatus">
+                <case regex="INCREASED">
+                    <payloadFactory media-type="json">
+                        <format>{
+"text" : "⚠️  GitHub issue count in wso2/$1 is incremented by $2"
+}</format>
+                        <args>
+                            <arg evaluator="xml" expression="get-property('uri.var.reponame')"/>
+                            <arg evaluator="xml" expression="$ctx:GitHubIssueDifference"/>
+                        </args>
+                    </payloadFactory>
+                    <call>
+                        <endpoint key="InvokeChatWebHook"/>
+                    </call>
+                </case>
+                <case regex="DECREASED">
+                    <payloadFactory media-type="json">
+                        <format>{
+"text" : "&#x1f389;  Good Job! GitHub issue count in wso2/$1 is decremented by $2"
+}</format>
+                        <args>
+                            <arg evaluator="xml" expression="get-property('uri.var.reponame')"/>
+                            <arg evaluator="xml" expression="$ctx:GitHubIssueDifference"/>
+                        </args>
+                    </payloadFactory>
+                    <call>
+                        <endpoint key="InvokeChatWebHook"/>
+                    </call>
+                </case>
+                <default>
+                    <log level="custom">
+                        <property expression="fn:concat('No worries! GitHub issue count in wso2/', get-property('uri.var.reponame'), ' is still in managable state')" name="Message: "/>
+                    </log>
+                </default>
+            </switch>
+        </inSequence>
+        <outSequence/>
+        <faultSequence/>
+    </resource>
+</api>

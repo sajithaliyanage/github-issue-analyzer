@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="DailyScheduleTask" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <propertyGroup>
+        <property expression="get-property('system', 'carbon.home')" name="carbonHome" scope="default" type="STRING"/>
+        <property expression="fn:concat($ctx:carbonHome, '/registry/governance/custom/repo-names.csv')" name="fileSource" scope="default" type="STRING"/>
+    </propertyGroup>
+    <file.read configKey="csvFileRead">
+        <path>{$ctx:fileSource}</path>
+        <readMode>Complete File</readMode>
+        <startLineNum>0</startLineNum>
+        <endLineNum>0</endLineNum>
+        <lineNum>0</lineNum>
+        <contentType>text/plain</contentType>
+        <includeResultTo>Message Body</includeResultTo>
+        <enableStreaming>false</enableStreaming>
+        <enableLock>false</enableLock>
+    </file.read>
+    <CSV.csvToJson>
+        <headerPresent>Absent</headerPresent>
+        <skipHeader>false</skipHeader>
+        <csvEmptyValues>Null</csvEmptyValues>
+        <jsonKeys>name</jsonKeys>
+        <dataTypes>[]</dataTypes>
+        <rootJsonKey>repositories</rootJsonKey>
+    </CSV.csvToJson>
+    <iterate continueParent="true" expression="json-eval($.repositories)" id="LoopDailyRepositories" sequential="true">
+        <target>
+            <sequence>
+                <propertyGroup>
+                    <property expression="json-eval($.name)" name="uri.var.reponame" scope="default" type="STRING"/>
+                    <property name="uri.var.state" scope="default" type="STRING" value="open"/>
+                    <property name="messageType" scope="axis2" type="STRING" value="application/json"/>
+                    <property name="ContentType" scope="axis2" type="STRING" value="application/json"/>
+                </propertyGroup>
+                <call>
+                    <endpoint>
+                        <http method="get" uri-template="http://localhost:8290/daily-task/action/{uri.var.reponame}">
+                            <suspendOnFailure>
+                                <initialDuration>-1</initialDuration>
+                                <progressionFactor>-1</progressionFactor>
+                                <maximumDuration>0</maximumDuration>
+                            </suspendOnFailure>
+                            <markForSuspension>
+                                <retriesBeforeSuspension>0</retriesBeforeSuspension>
+                            </markForSuspension>
+                        </http>
+                    </endpoint>
+                </call>
+            </sequence>
+        </target>
+    </iterate>
+</sequence>

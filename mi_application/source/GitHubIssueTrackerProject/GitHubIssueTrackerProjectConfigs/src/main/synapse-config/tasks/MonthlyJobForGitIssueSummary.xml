@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task class="org.apache.synapse.startup.tasks.MessageInjector" group="synapse.simple.quartz" name="MonthlyJobForGitIssueSummary" xmlns="http://ws.apache.org/ns/synapse">
+    <trigger cron="0 0 0 L * ? *"/>
+    <property name="message" xmlns:task="http://www.wso2.org/products/wso2commons/tasks">
+        <echoString xmlns="">
+            <in>MonthlyCronJobToGetGitIssueSummary</in>
+        </echoString>
+    </property>
+    <property name="sequenceName" value="MonthlyScheduleTask" xmlns:task="http://www.wso2.org/products/wso2commons/tasks"/>
+    <property name="injectTo" value="sequence" xmlns:task="http://www.wso2.org/products/wso2commons/tasks"/>
+</task>

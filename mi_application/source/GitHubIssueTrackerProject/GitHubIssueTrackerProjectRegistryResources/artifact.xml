@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><artifacts>
+    <artifact name="repo-names_csv" groupId="com.example.resource" version="1.0.0" type="registry/resource" serverRole="EnterpriseIntegrator">
+        <item>
+            <file>repo-names.csv</file>
+            <path>/_system/governance/custom</path>
+            <mediaType>text/csv</mediaType>
+        </item>
+    </artifact>
+</artifacts>
